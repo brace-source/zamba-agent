@@ -194,6 +194,26 @@ CAT_SVG = "".join([
 st.title("🐈‍⬛ Zamba")
 AVATARS = {"user": "🙂", "assistant": "🐈‍⬛"}
 
+def check_password():
+    try:
+        correct = st.secrets["APP_PASSWORD"]
+    except Exception:
+        return True
+    if st.session_state.get("authed"):
+        return True
+    st.subheader("🔒 Please enter the password")
+    pw = st.text_input("Password", type="password")
+    if pw:
+        if pw == correct:
+            st.session_state.authed = True
+            st.rerun()
+        else:
+            st.error("Wrong password")
+    return False
+
+if not check_password():
+    st.stop()
+
 if "all_chats" not in st.session_state:
     st.session_state.all_chats = load_all()
 if st.session_state.all_chats["current"] not in st.session_state.all_chats["chats"]:
